@@ -2,6 +2,7 @@
 import { ReactNode } from "react";
 import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
+import { SafeArea } from "@coinbase/onchainkit/minikit";
 
 
 export function RootProvider({ children }: { children: ReactNode }) {
@@ -24,7 +25,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
         notificationProxyUrl: undefined,
       }}
     >
-      {children}
+      <SafeArea>{children}</SafeArea>
     </OnchainKitProvider>
   );
 }

@@ -4,6 +4,7 @@ import { SafeArea } from "@coinbase/onchainkit/minikit";
 import { minikitConfig } from "../minikit.config";
 import { RootProvider } from "./rootProvider";
 import "./globals.css";
+import "@coinbase/onchainkit/styles.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

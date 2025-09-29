@@ -51,6 +51,21 @@ export default function RootLayout({
   );
 }
 
-export const metadata = {
-      generator: 'v0.app'
-    };
+export const metadata ={
+  generator: 'v0.app',
+  title: minikitConfig.miniapp.name,
+  description: minikitConfig.miniapp.description,
+  other: {
+    "fc:frame": JSON.stringify({
+      version: minikitConfig.miniapp.version,
+      imageUrl: minikitConfig.miniapp.heroImageUrl,
+      button: {
+        title: `Join the ${minikitConfig.miniapp.name} Waitlist`,
+        action: {
+          name: `Launch ${minikitConfig.miniapp.name}`,
+          type: "launch_frame",
+        },
+      },
+    }),
+  },
+}

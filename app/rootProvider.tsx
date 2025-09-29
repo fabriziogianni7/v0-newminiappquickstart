@@ -1,16 +1,10 @@
 "use client";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 
-export function RootProvider({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    // Dynamically import the CSS to avoid V0.dev MIME type issues
-    import("@coinbase/onchainkit/styles.css").catch((error) => {
-      console.warn("Failed to load OnchainKit styles:", error);
-    });
-  }, []);
 
+export function RootProvider({ children }: { children: ReactNode }) {
   return (
     <OnchainKitProvider
       apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}

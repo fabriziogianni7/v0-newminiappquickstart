@@ -124,3 +124,113 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(247, 217, 84, 0.4);
 }
+
+/* Added game-specific styles */
+.gameHUD {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 10;
+}
+
+.score,
+.timer {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gameArea {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.fly {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 1rem;
+  transition: transform 0.1s ease;
+  animation: flyBuzz 0.5s infinite alternate;
+  z-index: 6;
+}
+
+.fly:hover {
+  transform: scale(1.2);
+}
+
+.fly:active {
+  transform: scale(0.8);
+}
+
+@keyframes flyBuzz {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(2px, -2px) rotate(5deg);
+  }
+}
+
+.finalScore {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f7d954;
+  margin: 1rem 0;
+  text-shadow: 0 0 20px rgba(247, 217, 84, 0.5);
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  .gameHUD {
+    top: 60px;
+    padding: 0 1rem;
+  }
+
+  .score,
+  .timer {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .fly {
+    font-size: 0.9rem;
+  }
+
+  .finalScore {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gameHUD {
+    top: 50px;
+    padding: 0 0.5rem;
+  }
+
+  .score,
+  .timer {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .fly {
+    font-size: 0.8rem;
+  }
+}

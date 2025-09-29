@@ -15,9 +15,9 @@ export const minikitConfig = {
   },
   miniapp: {
     version: "1",
-    name: "Cubey", 
-    subtitle: "Your AI Ad Companion", 
-    description: "Ads",
+    name: "Fly Smasher", 
+    subtitle: "Smash as many flies as possible", 
+    description: "Game",
     screenshotUrls: [`${ROOT_URL}/sphere.svg`],
     iconUrl: `${ROOT_URL}/sphere.svg`,
     splashImageUrl: `${ROOT_URL}/sphere.svg`,

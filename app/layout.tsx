@@ -3,7 +3,7 @@ import { Inter, Source_Code_Pro } from "next/font/google";
 import { SafeArea } from "@coinbase/onchainkit/minikit";
 import { minikitConfig } from "../minikit.config";
 import { RootProvider } from "./rootProvider";
-
+import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -25,8 +25,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-
-
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -45,10 +43,14 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
-        <body className={`${inter.variable} ${sourceCodePro.variable}`} suppressHydrationWarning={true}>
+        <body className={`${inter.variable} ${sourceCodePro.variable}`}>
           <SafeArea>{children}</SafeArea>
         </body>
       </html>
     </RootProvider>
   );
 }
+
+export const metadata = {
+      generator: 'v0.app'
+    };

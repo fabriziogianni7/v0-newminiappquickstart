@@ -4,6 +4,7 @@ import { SafeArea } from "@coinbase/onchainkit/minikit";
 import { minikitConfig } from "../minikit.config"
 import { RootProvider } from "./rootProvider";
 import "./globals.css";
+import { ReactNode } from "react";
 
 
 const inter = Inter({
@@ -16,6 +17,12 @@ const sourceCodePro = Source_Code_Pro({
   subsets: ["latin"],
 });
 
+// Wrapper component to handle SafeArea TypeScript issues
+function SafeAreaWrapper({ children }: { children: ReactNode }) {
+  const safeAreaResult = SafeArea({ children });
+  return safeAreaResult || <>{children}</>;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +32,7 @@ export default function RootLayout({
     <RootProvider>
       <html lang="en">
         <body className={`${inter.variable} ${sourceCodePro.variable}`}>
-          <SafeArea>{children}</SafeArea>
+          <SafeAreaWrapper>{children}</SafeAreaWrapper>
         </body>
       </html>
     </RootProvider>

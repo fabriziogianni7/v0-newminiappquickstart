@@ -167,8 +167,10 @@
   pointer-events: auto;
   font-size: 1rem;
   transition: transform 0.1s ease;
-  animation: flyBuzz 0.5s infinite alternate;
+  /* Enhanced fly animation with more realistic movement */
+  animation: flyBuzz 0.3s infinite alternate, flyFloat 2s infinite ease-in-out;
   z-index: 6;
+  transform-origin: center;
 }
 
 .fly:hover {
@@ -179,12 +181,60 @@
   transform: scale(0.8);
 }
 
+/* Updated fly animations for more realistic movement */
 @keyframes flyBuzz {
   0% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0) rotate(-2deg);
   }
   100% {
-    transform: translate(2px, -2px) rotate(5deg);
+    transform: translate(1px, -1px) rotate(2deg);
+  }
+}
+
+@keyframes flyFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Added blood splatter effect styles */
+.bloodSplatter {
+  position: absolute;
+  font-size: 1.5rem;
+  pointer-events: none;
+  z-index: 4;
+  animation: bloodSplat 0.5s ease-out, bloodFade 3s ease-out;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes bloodSplat {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes bloodFade {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
@@ -216,6 +266,11 @@
   .finalScore {
     font-size: 1.5rem;
   }
+
+  /* Adjusted blood splatter size for mobile */
+  .bloodSplatter {
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -232,5 +287,14 @@
 
   .fly {
     font-size: 0.8rem;
+  }
+
+  .finalScore {
+    font-size: 1.2rem;
+  }
+
+  /* Further adjusted blood splatter size for small screens */
+  .bloodSplatter {
+    font-size: 1rem;
   }
 }

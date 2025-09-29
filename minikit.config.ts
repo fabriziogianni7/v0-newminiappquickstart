@@ -16,7 +16,7 @@ export const minikitConfig = {
   miniapp: {
     version: "1",
     name: "Fly Smasher", 
-    subtitle: "Smash as many flies as possible", 
+    subtitle: "Smash all fkn flies", 
     description: "Game",
     screenshotUrls: [`${ROOT_URL}/sphere.svg`],
     iconUrl: `${ROOT_URL}/sphere.svg`,

@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import type React from "react"
 
 import { useQuickAuth, useMiniKit } from "@coinbase/onchainkit/minikit"
 import styles from "./page.module.css"
@@ -20,6 +21,15 @@ interface Fly {
   y: number
   size: number
   speed: number
+  vx: number // velocity x
+  vy: number // velocity y
+  direction: number // movement direction
+}
+
+interface BloodSplatter {
+  id: number
+  x: number
+  y: number
 }
 
 export default function Home() {
@@ -29,6 +39,60 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(60)
   const [flies, setFlies] = useState<Fly[]>([])
   const [nextFlyId, setNextFlyId] = useState(1)
+  const [bloodSplatters, setBloodSplatters] = useState<BloodSplatter[]>([])
+  const [nextBloodId, setNextBloodId] = useState(1)
+
+  const audioContextRef = useRef<AudioContext | null>(null)
+
+  useEffect(() => {
+    const initAudio = () => {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      }
+    }
+
+    // Initialize on first user interaction
+    const handleFirstInteraction = () => {
+      initAudio()
+      document.removeEventListener("touchstart", handleFirstInteraction)
+      document.removeEventListener("click", handleFirstInteraction)
+    }
+
+    document.addEventListener("touchstart", handleFirstInteraction)
+    document.addEventListener("click", handleFirstInteraction)
+
+    return () => {
+      document.removeEventListener("touchstart", handleFirstInteraction)
+      document.removeEventListener("click", handleFirstInteraction)
+    }
+  }, [])
+
+  const playSquishSound = useCallback(() => {
+    if (!audioContextRef.current) return
+
+    const ctx = audioContextRef.current
+    const oscillator = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    // Create a "squish" sound effect
+    oscillator.frequency.setValueAtTime(200, ctx.currentTime)
+    oscillator.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1)
+
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2)
+
+    oscillator.start(ctx.currentTime)
+    oscillator.stop(ctx.currentTime + 0.2)
+  }, [])
+
+  const triggerVibration = useCallback(() => {
+    if ("vibrate" in navigator) {
+      navigator.vibrate(50) // Short vibration
+    }
+  }, [])
 
   // Initialize the miniapp
   useEffect(() => {
@@ -66,6 +130,9 @@ export default function Home() {
             y: Math.random() * 70 + 15, // 15-85% to avoid header/footer
             size: Math.random() * 20 + 15, // 15-35px
             speed: Math.random() * 3 + 2, // 2-5 seconds lifespan
+            vx: (Math.random() - 0.5) * 2, // Random horizontal velocity
+            vy: (Math.random() - 0.5) * 2, // Random vertical velocity
+            direction: Math.random() * 360, // Random initial direction
           }
           setFlies((prev) => [...prev, newFly])
           setNextFlyId((prev) => prev + 1)
@@ -77,6 +144,59 @@ export default function Home() {
   }, [gameState, nextFlyId])
 
   useEffect(() => {
+    let animationFrame: number
+
+    if (gameState === "playing") {
+      const animateFlies = () => {
+        setFlies((prevFlies) =>
+          prevFlies.map((fly) => {
+            let newX = fly.x + fly.vx * 0.5
+            let newY = fly.y + fly.vy * 0.5
+            let newVx = fly.vx
+            let newVy = fly.vy
+
+            // Bounce off edges
+            if (newX <= 5 || newX >= 95) {
+              newVx = -newVx
+              newX = Math.max(5, Math.min(95, newX))
+            }
+            if (newY <= 10 || newY >= 85) {
+              newVy = -newVy
+              newY = Math.max(10, Math.min(85, newY))
+            }
+
+            // Add some randomness to movement
+            newVx += (Math.random() - 0.5) * 0.1
+            newVy += (Math.random() - 0.5) * 0.1
+
+            // Limit velocity
+            const maxVelocity = 1.5
+            newVx = Math.max(-maxVelocity, Math.min(maxVelocity, newVx))
+            newVy = Math.max(-maxVelocity, Math.min(maxVelocity, newVy))
+
+            return {
+              ...fly,
+              x: newX,
+              y: newY,
+              vx: newVx,
+              vy: newVy,
+            }
+          }),
+        )
+        animationFrame = requestAnimationFrame(animateFlies)
+      }
+
+      animationFrame = requestAnimationFrame(animateFlies)
+    }
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
+    }
+  }, [gameState])
+
+  useEffect(() => {
     if (gameState === "playing") {
       const removeTimer = setTimeout(() => {
         setFlies((prev) => prev.slice(1)) // Remove oldest fly
@@ -85,10 +205,42 @@ export default function Home() {
     }
   }, [flies.length, gameState])
 
-  const handleFlyClick = useCallback((flyId: number) => {
-    setFlies((prev) => prev.filter((fly) => fly.id !== flyId))
-    setScore((prev) => prev + 10)
-  }, [])
+  const handleFlyClick = useCallback(
+    (flyId: number, event: React.MouseEvent) => {
+      const fly = flies.find((f) => f.id === flyId)
+      if (!fly) return
+
+      // Create blood splatter at fly position
+      const rect = (event.target as HTMLElement).getBoundingClientRect()
+      const gameArea = document.querySelector(`.${styles.gameArea}`)
+      if (gameArea) {
+        const gameRect = gameArea.getBoundingClientRect()
+        const relativeX = ((rect.left + rect.width / 2 - gameRect.left) / gameRect.width) * 100
+        const relativeY = ((rect.top + rect.height / 2 - gameRect.top) / gameRect.height) * 100
+
+        const newBloodSplatter: BloodSplatter = {
+          id: nextBloodId,
+          x: relativeX,
+          y: relativeY,
+        }
+
+        setBloodSplatters((prev) => [...prev, newBloodSplatter])
+        setNextBloodId((prev) => prev + 1)
+
+        // Remove blood splatter after 3 seconds
+        setTimeout(() => {
+          setBloodSplatters((prev) => prev.filter((splatter) => splatter.id !== newBloodSplatter.id))
+        }, 3000)
+      }
+
+      // Remove fly, add score, play sound, and vibrate
+      setFlies((prev) => prev.filter((fly) => fly.id !== flyId))
+      setScore((prev) => prev + 10)
+      playSquishSound()
+      triggerVibration()
+    },
+    [flies, nextBloodId, playSquishSound, triggerVibration],
+  )
 
   const startGame = () => {
     setGameState("playing")
@@ -96,6 +248,8 @@ export default function Home() {
     setTimeLeft(60)
     setFlies([])
     setNextFlyId(1)
+    setBloodSplatters([])
+    setNextBloodId(1)
   }
 
   const resetGame = () => {
@@ -104,11 +258,13 @@ export default function Home() {
     setTimeLeft(60)
     setFlies([])
     setNextFlyId(1)
+    setBloodSplatters([])
+    setNextBloodId(1)
   }
 
   return (
     <div className={styles.container}>
-      <button className={styles.closeButton} type="button">
+      <button className={styles.closeButton} type="button" onClick={resetGame}>
         ✕
       </button>
 
@@ -144,10 +300,22 @@ export default function Home() {
                     width: `${fly.size}px`,
                     height: `${fly.size}px`,
                   }}
-                  onClick={() => handleFlyClick(fly.id)}
+                  onClick={(e) => handleFlyClick(fly.id, e)}
                 >
                   🪰
                 </button>
+              ))}
+              {bloodSplatters.map((splatter) => (
+                <div
+                  key={splatter.id}
+                  className={styles.bloodSplatter}
+                  style={{
+                    left: `${splatter.x}%`,
+                    top: `${splatter.y}%`,
+                  }}
+                >
+                  💥
+                </div>
               ))}
             </div>
           </>

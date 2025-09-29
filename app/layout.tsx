@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
-        <body className={`${inter.variable} ${sourceCodePro.variable}`}>
+        <body className={`${inter.variable} ${sourceCodePro.variable}`} suppressHydrationWarning={true}>
           <SafeArea>{children}</SafeArea>
         </body>
       </html>
@@ -51,6 +51,3 @@ export default function RootLayout({
   );
 }
 
-export const metadata = {
-      generator: 'v0.app'
-    };

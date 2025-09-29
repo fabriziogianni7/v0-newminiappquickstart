@@ -125,6 +125,29 @@
   box-shadow: 0 6px 25px rgba(247, 217, 84, 0.4);
 }
 
+/* Added share button styles */
+.shareButton {
+  background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 1rem 0;
+  box-shadow: 0 4px 20px rgba(29, 161, 242, 0.3);
+}
+
+.shareButton:hover {
+  background: linear-gradient(135deg, #0d8bd9 0%, #0a7bc4 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(29, 161, 242, 0.4);
+}
+
 /* Added game-specific styles */
 .gameHUD {
   position: fixed;

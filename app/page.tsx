@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import type React from "react"
 
-import { useQuickAuth, useMiniKit } from "@coinbase/onchainkit/minikit"
+import { useQuickAuth, useMiniKit, useComposeCast } from "@coinbase/onchainkit/minikit"
 import styles from "./page.module.css"
 
 interface AuthResponse {
@@ -34,6 +34,7 @@ interface BloodSplatter {
 
 export default function Home() {
   const { isFrameReady, setFrameReady, context } = useMiniKit()
+  const { composeCast } = useComposeCast()
   const [gameState, setGameState] = useState<"waiting" | "playing" | "finished">("waiting")
   const [score, setScore] = useState(0)
   const [timeLeft, setTimeLeft] = useState(60)
@@ -262,6 +263,15 @@ export default function Home() {
     setNextBloodId(1)
   }
 
+  const handleShare = useCallback(() => {
+    const fliesSmashed = score / 10
+    const shareText = `Just smashed ${fliesSmashed} flies in 60 seconds! 🪰💥 Final score: ${score} points in Fly Smasher! Can you beat my score?`
+
+    composeCast({
+      text: shareText,
+    })
+  }, [score, composeCast])
+
   return (
     <div className={styles.container}>
       <button className={styles.closeButton} type="button" onClick={resetGame}>
@@ -330,6 +340,9 @@ export default function Home() {
               <br />
               You smashed {score / 10} flies in 60 seconds!
             </p>
+            <button onClick={handleShare} className={styles.shareButton}>
+              Share on Farcaster
+            </button>
             <button onClick={resetGame} className={styles.joinButton}>
               PLAY AGAIN
             </button>

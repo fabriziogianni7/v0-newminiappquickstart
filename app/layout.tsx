@@ -52,7 +52,3 @@ export default function RootLayout({
     </RootProvider>
   );
 }
-
-export const metadata = {
-      generator: 'v0.app'
-    };

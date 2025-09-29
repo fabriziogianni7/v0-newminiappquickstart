@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useQuickAuth, useMiniKit } from "@coinbase/onchainkit/minikit"
 import { useRouter } from "next/navigation"
-import { minikitConfig } from "../minikit.config.js"
+import { minikitConfig } from "../minikit.config"
 import styles from "./page.module.css"
 
 interface AuthResponse {

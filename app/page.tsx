@@ -46,6 +46,7 @@ export default function Home() {
   const [nextBloodId, setNextBloodId] = useState(1)
 
   const audioContextRef = useRef<AudioContext | null>(null)
+  const themeSongRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     const initAudio = () => {
@@ -97,6 +98,26 @@ export default function Home() {
     }
   }, [])
 
+  const playThemeSong = useCallback(() => {
+    if (!themeSongRef.current) {
+      themeSongRef.current = new Audio("/theme-song.mp3")
+      themeSongRef.current.loop = true
+      themeSongRef.current.volume = 0.3 // Set volume to 30%
+    }
+    
+    // Play the theme song
+    themeSongRef.current.play().catch((error) => {
+      console.log("Could not play theme song:", error)
+    })
+  }, [])
+
+  const stopThemeSong = useCallback(() => {
+    if (themeSongRef.current) {
+      themeSongRef.current.pause()
+      themeSongRef.current.currentTime = 0
+    }
+  }, [])
+
   // Initialize the miniapp
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -118,9 +139,10 @@ export default function Home() {
       }, 1000)
     } else if (timeLeft === 0 && gameState === "playing") {
       setGameState("finished")
+      stopThemeSong() // Stop the theme song when game ends
     }
     return () => clearTimeout(timer)
-  }, [gameState, timeLeft])
+  }, [gameState, timeLeft, stopThemeSong])
 
   useEffect(() => {
     let spawnTimer: NodeJS.Timeout
@@ -256,6 +278,7 @@ export default function Home() {
     setNextFlyId(1)
     setBloodSplatters([])
     setNextBloodId(1)
+    playThemeSong() // Start playing the theme song
   }
 
   const resetGame = () => {
@@ -266,6 +289,7 @@ export default function Home() {
     setNextFlyId(1)
     setBloodSplatters([])
     setNextBloodId(1)
+    stopThemeSong() // Stop the theme song when resetting
   }
 
   const handleShare = useCallback(() => {
@@ -274,7 +298,7 @@ export default function Home() {
 
     composeCast({
       text: shareText,
-      embeds: [`${window.location.origin}`]
+      embeds: [`https://v0-newminiappquickstart.vercel.app/`]
     })
   }, [score, composeCast])
 

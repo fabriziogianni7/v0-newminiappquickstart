@@ -20,6 +20,8 @@ interface Fly {
   x: number
   y: number
   size: number
+  width: number // separate width for visual
+  height: number // separate height for visual
   speed: number
   vx: number // velocity x
   vy: number // velocity y
@@ -125,11 +127,14 @@ export default function Home() {
     if (gameState === "playing") {
       spawnTimer = setInterval(
         () => {
+          const baseSize = Math.random() * 20 + 15 // 15-35px base size
           const newFly: Fly = {
             id: nextFlyId,
             x: Math.random() * 80 + 10, // 10-90% to avoid edges
             y: Math.random() * 70 + 15, // 15-85% to avoid header/footer
-            size: Math.random() * 20 + 15, // 15-35px
+            size: baseSize + 20, // Add 20px for tappable area (bigger than visual)
+            width: baseSize * (0.8 + Math.random() * 0.4), // 80-120% of base size
+            height: baseSize * (0.8 + Math.random() * 0.4), // 80-120% of base size
             speed: Math.random() * 3 + 2, // 2-5 seconds lifespan
             vx: (Math.random() - 0.5) * 2, // Random horizontal velocity
             vy: (Math.random() - 0.5) * 2, // Random vertical velocity
@@ -274,9 +279,11 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <button className={styles.closeButton} type="button" onClick={resetGame}>
-        ✕
-      </button>
+      {gameState === "playing" && (
+        <button className={styles.closeButton} type="button" onClick={resetGame}>
+          ✕
+        </button>
+      )}
 
       <div className={styles.content}>
         {gameState === "waiting" && (
@@ -307,8 +314,9 @@ export default function Home() {
                   style={{
                     left: `${fly.x}%`,
                     top: `${fly.y}%`,
-                    width: `${fly.size}px`,
-                    height: `${fly.size}px`,
+                    width: `${fly.size}px`, // Tappable area (bigger)
+                    height: `${fly.size}px`, // Tappable area (bigger)
+                    fontSize: `${Math.min(fly.width, fly.height)}px`, // Visual size based on random dimensions
                   }}
                   onClick={(e) => handleFlyClick(fly.id, e)}
                 >

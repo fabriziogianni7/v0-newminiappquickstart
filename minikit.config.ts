@@ -19,7 +19,7 @@ export const minikitConfig = {
     subtitle: "Smash all fkn flies", 
     description: "Game",
     screenshotUrls: [`${ROOT_URL}/screen.png`],
-    iconUrl: `${ROOT_URL}/sphere.svg`,
+    iconUrl: `${ROOT_URL}/fly.gif`,
     splashImageUrl: `${ROOT_URL}/screen.png`,
     splashBackgroundColor: "#000000",
     homeUrl: ROOT_URL,
@@ -30,6 +30,6 @@ export const minikitConfig = {
     tagline: "",
     ogTitle: "",
     ogDescription: "",
-    ogImageUrl: `${ROOT_URL}/sphere.svg`,
+    ogImageUrl: `${ROOT_URL}/fly.svg`,
   },
 } as const;

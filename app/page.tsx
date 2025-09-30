@@ -33,7 +33,7 @@ interface BloodSplatter {
 }
 
 export default function Home() {
-  const { isFrameReady, setFrameReady, context } = useMiniKit()
+  const { setMiniAppReady, isMiniAppReady, context } = useMiniKit()
   const { composeCast } = useComposeCast()
   const [gameState, setGameState] = useState<"waiting" | "playing" | "finished">("waiting")
   const [score, setScore] = useState(0)
@@ -97,10 +97,10 @@ export default function Home() {
 
   // Initialize the miniapp
   useEffect(() => {
-    if (!isFrameReady) {
-      setFrameReady()
+    if (!isMiniAppReady) {
+      setMiniAppReady()
     }
-  }, [setFrameReady, isFrameReady])
+  }, [setMiniAppReady, isMiniAppReady])
 
   const {
     data: authData,

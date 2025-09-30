@@ -274,7 +274,7 @@ export default function Home() {
 
     composeCast({
       text: shareText,
-      embeds: [`${window.location.origin}/fly.gif`]
+      embeds: [`${window.location.origin}`]
     })
   }, [score, composeCast])
 

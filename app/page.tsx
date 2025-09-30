@@ -294,7 +294,7 @@ export default function Home() {
 
   const handleShare = useCallback(() => {
     const fliesSmashed = score / 10
-    const shareText = `Just smashed ${fliesSmashed} flies in 60 seconds! 🪰💥 Final score: ${score} points in Fly Smasher! Can you beat my score?`
+    const shareText = `Just smashed ${fliesSmashed} flies in 60 seconds! 🪰💥 Final score: ${score} points in Fly Smasher! Can you beat my score? https://v0-newminiappquickstart.vercel.app/`
 
     composeCast({
       text: shareText,

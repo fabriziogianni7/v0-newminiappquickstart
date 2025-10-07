@@ -2,8 +2,7 @@
 import { useState, useEffect, useCallback } from "react"
 
 import { useQuickAuth, useMiniKit, useComposeCast } from "@coinbase/onchainkit/minikit"
-import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet"
-import { Address, Avatar, Name, Identity } from "@coinbase/onchainkit/identity"
+import { Wallet } from "@coinbase/onchainkit/wallet"
 import styles from "./page.module.css"
 
 interface AuthResponse {
@@ -118,20 +117,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.walletContainer}>
-        <Wallet>
-          <ConnectWallet className={styles.connectButton}>
-            <Avatar className="h-6 w-6" />
-            <Name />
-          </ConnectWallet>
-          <WalletDropdown>
-            <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-              <Avatar />
-              <Name />
-              <Address />
-            </Identity>
-            <WalletDropdownDisconnect />
-          </WalletDropdown>
-        </Wallet>
+        <Wallet />
       </div>
 
       <button className={styles.closeButton} type="button" onClick={resetGame}>

@@ -12,12 +12,12 @@
 .walletContainer {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  right: 1rem;
   z-index: 100;
 }
 
-/* Green connect button styling */
-.connectButton {
+/* Global styling for OnchainKit wallet button to make it green */
+.walletContainer button[data-testid="ockConnectButton"] {
   background: linear-gradient(135deg, #4caf50 0%, #45a049 100%) !important;
   color: white !important;
   border: none !important;
@@ -28,21 +28,24 @@
   cursor: pointer !important;
   transition: all 0.3s ease !important;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
 }
 
-.connectButton:hover {
+.walletContainer button[data-testid="ockConnectButton"]:hover {
   background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
 }
 
+/* Style the wallet component wrapper */
+.walletContainer .ock-wallet {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .closeButton {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  left: 1rem;
   background: none;
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;

@@ -20,8 +20,6 @@ interface Fly {
   x: number
   y: number
   size: number
-  width: number // separate width for visual
-  height: number // separate height for visual
   speed: number
   vx: number // velocity x
   vy: number // velocity y
@@ -46,7 +44,6 @@ export default function Home() {
   const [nextBloodId, setNextBloodId] = useState(1)
 
   const audioContextRef = useRef<AudioContext | null>(null)
-  const themeSongRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     const initAudio = () => {
@@ -98,26 +95,6 @@ export default function Home() {
     }
   }, [])
 
-  const playThemeSong = useCallback(() => {
-    if (!themeSongRef.current) {
-      themeSongRef.current = new Audio("/theme-song.mp3")
-      themeSongRef.current.loop = true
-      themeSongRef.current.volume = 0.3 // Set volume to 30%
-    }
-    
-    // Play the theme song
-    themeSongRef.current.play().catch((error) => {
-      console.log("Could not play theme song:", error)
-    })
-  }, [])
-
-  const stopThemeSong = useCallback(() => {
-    if (themeSongRef.current) {
-      themeSongRef.current.pause()
-      themeSongRef.current.currentTime = 0
-    }
-  }, [])
-
   // Initialize the miniapp
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -139,24 +116,20 @@ export default function Home() {
       }, 1000)
     } else if (timeLeft === 0 && gameState === "playing") {
       setGameState("finished")
-      stopThemeSong() // Stop the theme song when game ends
     }
     return () => clearTimeout(timer)
-  }, [gameState, timeLeft, stopThemeSong])
+  }, [gameState, timeLeft])
 
   useEffect(() => {
     let spawnTimer: NodeJS.Timeout
     if (gameState === "playing") {
       spawnTimer = setInterval(
         () => {
-          const baseSize = Math.random() * 20 + 15 // 15-35px base size
           const newFly: Fly = {
             id: nextFlyId,
             x: Math.random() * 80 + 10, // 10-90% to avoid edges
             y: Math.random() * 70 + 15, // 15-85% to avoid header/footer
-            size: baseSize + 20, // Add 20px for tappable area (bigger than visual)
-            width: baseSize * (0.8 + Math.random() * 0.4), // 80-120% of base size
-            height: baseSize * (0.8 + Math.random() * 0.4), // 80-120% of base size
+            size: Math.random() * 20 + 15, // 15-35px
             speed: Math.random() * 3 + 2, // 2-5 seconds lifespan
             vx: (Math.random() - 0.5) * 2, // Random horizontal velocity
             vy: (Math.random() - 0.5) * 2, // Random vertical velocity
@@ -278,7 +251,6 @@ export default function Home() {
     setNextFlyId(1)
     setBloodSplatters([])
     setNextBloodId(1)
-    playThemeSong() // Start playing the theme song
   }
 
   const resetGame = () => {
@@ -289,26 +261,22 @@ export default function Home() {
     setNextFlyId(1)
     setBloodSplatters([])
     setNextBloodId(1)
-    stopThemeSong() // Stop the theme song when resetting
   }
 
   const handleShare = useCallback(() => {
     const fliesSmashed = score / 10
-    const shareText = `Just smashed ${fliesSmashed} flies in 60 seconds! 🪰💥 Final score: ${score} points in Fly Smasher! Can you beat my score? https://v0-newminiappquickstart.vercel.app/`
+    const shareText = `Just smashed ${fliesSmashed} flies in 60 seconds! 🪰💥 Final score: ${score} points in Fly Smasher! Can you beat my score?`
 
     composeCast({
       text: shareText,
-      embeds: [`https://v0-newminiappquickstart.vercel.app/`]
     })
   }, [score, composeCast])
 
   return (
     <div className={styles.container}>
-      {gameState === "playing" && (
-        <button className={styles.closeButton} type="button" onClick={resetGame}>
-          ✕
-        </button>
-      )}
+      <button className={styles.closeButton} type="button" onClick={resetGame}>
+        ✕
+      </button>
 
       <div className={styles.content}>
         {gameState === "waiting" && (
@@ -339,9 +307,8 @@ export default function Home() {
                   style={{
                     left: `${fly.x}%`,
                     top: `${fly.y}%`,
-                    width: `${fly.size}px`, // Tappable area (bigger)
-                    height: `${fly.size}px`, // Tappable area (bigger)
-                    fontSize: `${Math.min(fly.width, fly.height)}px`, // Visual size based on random dimensions
+                    width: `${fly.size}px`,
+                    height: `${fly.size}px`,
                   }}
                   onClick={(e) => handleFlyClick(fly.id, e)}
                 >

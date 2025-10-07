@@ -194,18 +194,10 @@
   animation: flyBuzz 0.3s infinite alternate, flyFloat 2s infinite ease-in-out;
   z-index: 6;
   transform-origin: center;
-  /* Center the emoji within the larger tappable area */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Add subtle background for better visibility of tappable area */
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
 }
 
 .fly:hover {
   transform: scale(1.2);
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .fly:active {

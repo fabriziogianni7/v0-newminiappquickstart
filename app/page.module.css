@@ -8,6 +8,37 @@
   position: relative;
 }
 
+/* Added wallet container for top right positioning */
+.walletContainer {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+}
+
+/* Green connect button styling */
+.connectButton {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.connectButton:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
+}
+
 .closeButton {
   position: absolute;
   top: 1rem;
